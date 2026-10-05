@@ -9,7 +9,7 @@ from threading import Thread
 # === 1. 抓取金庫密碼 ===
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN')
-CHANNEL_ID = 1555854044457865357  # <--- 請換成你的頻道ID！
+CHANNEL_ID = 1555854044457865357  # <--- 請務必換成你的頻道ID！
 
 # === 2. 啟動 AI ===
 genai.configure(api_key=GEMINI_API_KEY)
@@ -52,13 +52,13 @@ async def on_ready():
     if not daily_task.is_running():
         daily_task.start()
 
-# 手動測試開關：只要輸入 !vocab 就會馬上給單字
+# === 手動測試開關：只要輸入 !vocab 就會馬上給單字 ===
 @bot.command()
 async def vocab(ctx):
     await ctx.send("收到指令，正在呼叫 AI 產生單字中...")
     await generate_words(ctx.channel)
 
-# 自動排程：設定台灣時間每天 22:30 發送 (可自行修改)
+# === 自動排程：設定台灣時間每天 22:30 發送 ===
 tz_tw = datetime.timezone(datetime.timedelta(hours=8))
 send_time = datetime.time(hour=22, minute=30, tzinfo=tz_tw)
 
