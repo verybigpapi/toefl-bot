@@ -25,7 +25,7 @@ intents = discord.Intents.default()
 intents.message_content = True  
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# === 4. 單字產生核心引擎 (使用直接聯絡 Google API 方式) ===
+# === 4. 單字產生核心引擎 (使用最新 gemini-2.5-flash 與正確解析) ===
 async def generate_words(channel):
     prompt = """
     為準備出國讀建築研究所的考生，產生5個托福核心單字與5個建築設計專業單字。
@@ -43,11 +43,13 @@ async def generate_words(channel):
     try:
         response = requests.post(url, headers=headers, json=data)
         res_json = response.json()
+        
+        # 正確解析新版 API 的回傳結構
         text = res_json['candidates'][0]['content']['parts'][0]['text']
         await channel.send(f"楊建築師，你的專屬單字來了：\n\n{text}")
     except Exception as e:
         print(f"發送失敗: {e}")
-        await channel.send("AI 產生失敗，請確認 API Key 是否正確。")
+        await channel.send(f"AI 產生失敗，錯誤原因: {res_json.get('error', {}).get('message', str(e))}")
 
 # === 5. 機器人啟動與指令 ===
 @bot.event
