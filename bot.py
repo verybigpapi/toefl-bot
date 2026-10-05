@@ -13,7 +13,8 @@ CHANNEL_ID = 1555854044457865357  # 你的正確頻道 ID 已經填好！
 
 # === 2. 啟動 AI ===
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.5-flash')
+
 
 # === 3. 雲端防休眠守衛 ===
 app = Flask(__name__)
