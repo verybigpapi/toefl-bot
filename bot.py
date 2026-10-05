@@ -13,7 +13,8 @@ CHANNEL_ID = 1555854044457865357  # 你的正確頻道 ID 已經填好！
 
 # === 2. 啟動 AI ===
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-2.5-flash')
+model = genai.GenerativeModel('gemini-3.8-flash')
+
 
 
 # === 3. 雲端防休眠守衛 ===
@@ -59,9 +60,9 @@ async def test_vocab(ctx):
     await ctx.send("收到指令，正在呼叫 AI 產生單字中...")
     await generate_words(ctx.channel)
 
-# 自動排程：設定今晚 11 點 15 分發送
+# 自動排程：設定今晚 10 點 30 分發送
 tz_tw = datetime.timezone(datetime.timedelta(hours=8))
-send_time = datetime.time(hour=23, minute=15, tzinfo=tz_tw)
+send_time = datetime.time(hour=22, minute=30, tzinfo=tz_tw)
 
 @tasks.loop(time=send_time)
 async def daily_task():
