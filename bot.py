@@ -5,6 +5,7 @@ import datetime
 import os
 from flask import Flask
 from threading import Thread
+from zoneinfo import ZoneInfo
 
 # === 改成從雲端主機的「保險箱」拿鑰匙 ===
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -36,8 +37,13 @@ async def on_ready():
     print("單字機器人已在雲端成功啟動！")
     send_daily_vocab.start()
 
-# 設定每天晚上 8 點 30 分發送 (台灣時間 20:30 = UTC 12:30)
-send_time = datetime.time(hour=12, minute=30, tzinfo=datetime.timezone.utc)
+# 嚴格指定使用台灣時區 (Asia/Taipei) 的晚上 9 點 00 分
+tz_taipei = ZoneInfo("Asia/Taipei")
+send_time = datetime.time(hour=21, minute=00, tzinfo=tz_taipei)
+
+@tasks.loop(time=send_time)
+async def send_daily_vocab():
+
 
 @tasks.loop(time=send_time)
 async def send_daily_vocab():
