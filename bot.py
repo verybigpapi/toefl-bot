@@ -25,7 +25,7 @@ intents = discord.Intents.default()
 intents.message_content = True  
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# === 4. 單字產生核心引擎 (使用最新 gemini-2.5-flash 與正確解析) ===
+# === 4. 單字產生核心引擎 (強制使用 Google 指定的 gemini-3.8-flash) ===
 async def generate_words(channel):
     prompt = """
     為準備出國讀建築研究所的考生，產生5個托福核心單字與5個建築設計專業單字。
@@ -34,7 +34,7 @@ async def generate_words(channel):
     📝 例句：[英文例句]
     💡 翻譯：[中文翻譯]
     """
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={GEMINI_API_KEY}"
     headers = {'Content-Type': 'application/json'}
     data = {
         "contents": [{"parts": [{"text": prompt}]}]
@@ -44,12 +44,13 @@ async def generate_words(channel):
         response = requests.post(url, headers=headers, json=data)
         res_json = response.json()
         
-        # 正確解析新版 API 的回傳結構
+        # 抓取新版 API 的回傳文字
         text = res_json['candidates'][0]['content']['parts'][0]['text']
         await channel.send(f"楊建築師，你的專屬單字來了：\n\n{text}")
     except Exception as e:
         print(f"發送失敗: {e}")
-        await channel.send(f"AI 產生失敗，錯誤原因: {res_json.get('error', {}).get('message', str(e))}")
+        error_msg = res_json.get('error', {}).get('message', str(e))
+        await channel.send(f"AI 產生失敗，錯誤原因: {error_msg}")
 
 # === 5. 機器人啟動與指令 ===
 @bot.event
