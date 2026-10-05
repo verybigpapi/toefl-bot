@@ -36,8 +36,8 @@ async def on_ready():
     print("單字機器人已在雲端成功啟動！")
     send_daily_vocab.start()
 
-# 設定每天晚上 8 點發送 (台灣時間 20:00 = UTC 12:00)
-send_time = datetime.time(hour=12, minute=0, tzinfo=datetime.timezone.utc)
+# 設定每天晚上 8 點 30 分發送 (台灣時間 20:30 = UTC 12:30)
+send_time = datetime.time(hour=12, minute=30, tzinfo=datetime.timezone.utc)
 
 @tasks.loop(time=send_time)
 async def send_daily_vocab():
