@@ -1,6 +1,5 @@
 import discord
 from discord.ext import tasks, commands
-import google.generativeai as genai
 import datetime
 import os
 from flask import Flask
@@ -13,7 +12,7 @@ CHANNEL_ID = 1555854044457865357  # 你的正確頻道 ID 已經填好！
 
 # === 2. 啟動 AI ===
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+
 
 
 
@@ -33,20 +32,31 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # === 5. 單字產生核心引擎 ===
+import requests # 記得最上面要 import requests
+
 async def generate_words(channel):
     prompt = """
     為準備出國讀建築研究所的考生，產生5個托福核心單字與5個建築設計專業單字。
     格式：
     👉 **[英文單字]** ([詞性]) [中文解釋]
-    📝 例句：[英文例句 (結合建築理論或留學生活)]
+    📝 例句：[英文例句]
     💡 翻譯：[中文翻譯]
     """
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+    headers = {'Content-Type': 'application/json'}
+    data = {
+        "contents": [{"parts": [{"text": prompt}]}]
+    }
+    
     try:
-        response = model.generate_content(prompt)
-        await channel.send(f"楊建築師，你的專屬單字來了：\n\n{response.text}")
+        response = requests.post(url, headers=headers, json=data)
+        res_json = response.json()
+        text = res_json['candidates'][0]['content']['parts'][0]['text']
+        await channel.send(f"BIGPAPI，你的專屬單字來了：\n\n{text}")
     except Exception as e:
         print(f"發送失敗: {e}")
         await channel.send("AI 產生失敗，請確認 API Key 是否正確。")
+
 
 # === 6. 機器人啟動與排程 ===
 @bot.event
