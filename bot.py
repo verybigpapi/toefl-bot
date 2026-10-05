@@ -130,7 +130,7 @@ async def generate_words(channel, announce=True):
         return
 
     now = datetime.datetime.now(TZ).strftime("%Y-%m-%d %H:%M")
-    header = f"楊建築師，{now} 的專屬單字（{model}）："
+    header = f"Verybigpapi，{now} 的專屬單字（{model}）："
     await send_long(channel, f"{header}\n\n{text}")
 
 
