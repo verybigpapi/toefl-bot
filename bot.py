@@ -10,9 +10,7 @@ from zoneinfo import ZoneInfo
 # === 改成從雲端主機的「保險箱」拿鑰匙 ===
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN')
-
-# 這裡填你原本的頻道ID數字 (這個不是機密，可以直接寫)
-CHANNEL_ID = 1234567890123456789 
+CHANNEL_ID = 1555854044457865357 # <--- 記得把這串數字換成你自己的頻道ID！
 
 genai.configure(api_key=GEMINI_API_KEY)
 # ==========================================
@@ -37,17 +35,12 @@ async def on_ready():
     print("單字機器人已在雲端成功啟動！")
     send_daily_vocab.start()
 
-# 嚴格指定使用台灣時區 (Asia/Taipei) 的晚上 9 點 00 分
+# 嚴格指定使用台灣時區 (Asia/Taipei) 的晚上 9 點 15 分
 tz_taipei = ZoneInfo("Asia/Taipei")
-send_time = datetime.time(hour=21, minute=00, tzinfo=tz_taipei)
+send_time = datetime.time(hour=21, minute=15, tzinfo=tz_taipei)
 
 @tasks.loop(time=send_time)
 async def send_daily_vocab():
-
-
-@tasks.loop(time=send_time)
-async def send_daily_vocab():
-
     today = datetime.datetime.today().weekday()
     if today < 5:
         channel = bot.get_channel(CHANNEL_ID)
